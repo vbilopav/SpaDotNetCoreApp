@@ -1,0 +1,63 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SpaDotNetCoreApp</title>
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css"
+          asp-fallback-href="~/lib/twitter-bootstrap/css/bootstrap.min.css"
+          asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute"
+          crossorigin="anonymous"
+          integrity="sha512-rO2SXEKBSICa/AfyhEK5ZqWFCOok1rcgPYfGOqtX35OyiraBg6Xa4NnBJwXgpIRoXeWjcAmcQniMhp22htDc6g==" />
+
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container">
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" href="#/">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" href="#/privacy">Privacy</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2020 - SpaDotNetCoreApp - <a href="#/privacy">Privacy</a>
+        </div>
+    </footer>
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/systemjs/6.2.3/system.min.js"
+            asp-fallback-src="~/lib/systemjs/system.min.js"
+            asp-fallback-test="window.System" 
+            crossorigin="anonymous"
+            integrity="sha512-X+43WJcsu13RFX9wxhlsJJzG987y9/aVdodotZGwu4HojZGSvyw+pIL/CnXUCZKR4ckOj/QZyHeclkOk7Esr8w==">
+    </script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/systemjs/6.2.3/extras/named-register.min.js"
+            asp-fallback-src="~/lib/systemjs/extras/named-register.min.js"
+            asp-fallback-test="window.System.registerRegistry" crossorigin="anonymous"
+            integrity="sha512-wxiDgcPPzAXWb46GDxmzktEzYx8lLg0vInaF2pen2GSo8XiclWw3XBlyKS42Nz3ZusdDJdMGUVllVYyfzcYu1g==">
+    </script>
+    <script>System.import("@this.AddFileVersionToPath("/js/app.js")").then(function () { System.import('main'); });</script>
+    
+</body>
+</html>

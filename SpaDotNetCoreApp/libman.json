@@ -1,0 +1,22 @@
+{
+  "version": "1.0",
+  "defaultProvider": "cdnjs",
+  "libraries": [
+    {
+      "library": "twitter-bootstrap@4.5.0",
+      "destination": "wwwroot/lib/twitter-bootstrap/",
+      "files": [
+        "css/bootstrap.min.css"
+      ]
+    }
+  ,
+{
+  "library": "systemjs@6.2.3",
+  "destination": "wwwroot/lib/systemjs/",
+  "files": [
+    "system.min.js",
+    "extras/named-register.min.js"
+  ]
+}
+]
+}

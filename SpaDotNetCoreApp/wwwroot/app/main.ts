@@ -2,7 +2,7 @@
 
 new Router()
 .onNavigate(e => {
-    console.log(e.params);
+    e.element.querySelector("div").innerHTML = JSON.stringify(e.params);
 })
 .start();
 

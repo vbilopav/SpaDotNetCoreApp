@@ -6,18 +6,23 @@ System.register("router", [], function (exports_1, context_1) {
         setters: [],
         execute: function () {
             Router = class Router {
-                constructor(element = document.body, hashChar = "#", test = ((r) => /^[A-Za-z0-9_@()/.-]*$/.test(r))) {
+                constructor(args = {}) {
                     this.hashChar = "#";
                     this.onErrorHandler = (hashChangedEvent) => { throw new Error(`Unknown route: ${hashChangedEvent.newURL}`); };
                     this.onBeforeNavigateHandler = route => { };
                     this.onBeforeLeaveHandler = route => { };
                     this.onNavigateHandler = route => { };
                     this.onLeaveHandler = route => { };
-                    this.hashChar = hashChar;
+                    args = Object.assign({
+                        element: document.body,
+                        hashChar: "#",
+                        test: ((r) => /^[A-Za-z0-9_@()/.-]*$/.test(r))
+                    }, args);
+                    this.hashChar = args.hashChar;
                     this.routes = {};
-                    for (let e of element.querySelectorAll("[data-route]")) {
+                    for (let e of args.element.querySelectorAll("[data-route]")) {
                         let element = e, route = element.dataset["route"], p = element.dataset["routeParams"], paramMap = null, params = {}, defaultParams = {};
-                        if (!test(route)) {
+                        if (!args.test(route)) {
                             throw new Error(`Invalid route definition: ${route}`);
                         }
                         if (!route.startsWith("/")) {
@@ -89,19 +94,21 @@ System.register("router", [], function (exports_1, context_1) {
                         uriPieces.splice(-1, 1);
                     }
                     let pieces = uriPieces.slice(sliceIndex);
-                    if (pieces.length > route.paramMap.size) {
-                        route = null;
-                    }
-                    else {
-                        route.params = Object.assign({}, route.defaultParams);
-                        route.paramMap = new Map(Object.entries(route.params));
-                        if (pieces.length) {
-                            let keys = Array.from(route.paramMap.keys());
-                            for (i = 0, len = pieces.length; i < len; i++) {
-                                let piece = pieces[i];
-                                let key = keys[i];
-                                route.paramMap.set(key, piece);
-                                route.params[key] = piece;
+                    if (route) {
+                        if (pieces.length > route.paramMap.size) {
+                            route = null;
+                        }
+                        else {
+                            route.params = Object.assign({}, route.defaultParams);
+                            route.paramMap = new Map(Object.entries(route.params));
+                            if (pieces.length) {
+                                let keys = Array.from(route.paramMap.keys());
+                                for (i = 0, len = pieces.length; i < len; i++) {
+                                    let piece = pieces[i];
+                                    let key = keys[i];
+                                    route.paramMap.set(key, piece);
+                                    route.params[key] = piece;
+                                }
                             }
                         }
                     }
@@ -134,7 +141,7 @@ System.register("main", ["router"], function (exports_2, context_2) {
         execute: function () {
             new router_1.default()
                 .onNavigate(e => {
-                console.log(e.params);
+                e.element.querySelector("div").innerHTML = JSON.stringify(e.params);
             })
                 .start();
         }

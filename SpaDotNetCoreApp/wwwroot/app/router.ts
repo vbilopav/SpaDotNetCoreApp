@@ -13,6 +13,12 @@ type RouteEventArgs = {
     hashChangedEvent: HashChangeEvent
 };
 
+type IRouterCtorArgs = {
+    element?: Element,
+    hashChar?: string,
+    test?: (route: string) => boolean;
+}
+
 type ErrorEvent = (hashChangedEvent: HashChangeEvent) => void;
 type RouteEvent = (event: RouteEventArgs) => void;
 
@@ -27,21 +33,22 @@ export default class Router {
     public current: IRoute;
     public routes: Record<string, IRoute>;
 
-    constructor(
-        element: Element = document.body, 
-        hashChar = "#", 
-        test=((r: string) => /^[A-Za-z0-9_@()/.-]*$/.test(r))
-    ) {
-        this.hashChar = hashChar;
+    constructor(args: IRouterCtorArgs = {}) {
+        args = Object.assign({
+            element: document.body,
+            hashChar: "#",
+            test: ((r: string) => /^[A-Za-z0-9_@()/.-]*$/.test(r))
+        }, args);
+        this.hashChar = args.hashChar;
         this.routes = {};
-        for(let e of element.querySelectorAll("[data-route]")) {
+        for(let e of args.element.querySelectorAll("[data-route]")) {
             let element = (e as HTMLElement),
                 route = element.dataset["route"] as string,
                 p = element.dataset["routeParams"] as string,
                 paramMap = null,
                 params = {},
                 defaultParams = {};
-            if (!test(route)) {
+            if (!args.test(route)) {
                 throw new Error(`Invalid route definition: ${route}`);
             }
             if (!route.startsWith("/")) {
@@ -126,22 +133,23 @@ export default class Router {
             uriPieces.splice(-1, 1);
         }
         let pieces = uriPieces.slice(sliceIndex);
-        if (pieces.length > route.paramMap.size) {
-            route = null;
-        } else {
-            route.params = Object.assign({}, route.defaultParams);
-            route.paramMap = new Map<string, any>(Object.entries(route.params));
-            if (pieces.length) {
-                let keys = Array.from(route.paramMap.keys());
-                for (i = 0, len = pieces.length; i < len; i++) {
-                    let piece = pieces[i];
-                    let key = keys[i];
-                    route.paramMap.set(key, piece);
-                    route.params[key] = piece;
+        if (route) {
+            if (pieces.length > route.paramMap.size) {
+                route = null;
+            } else {
+                route.params = Object.assign({}, route.defaultParams);
+                route.paramMap = new Map<string, any>(Object.entries(route.params));
+                if (pieces.length) {
+                    let keys = Array.from(route.paramMap.keys());
+                    for (i = 0, len = pieces.length; i < len; i++) {
+                        let piece = pieces[i];
+                        let key = keys[i];
+                        route.paramMap.set(key, piece);
+                        route.params[key] = piece;
+                    }
                 }
             }
         }
-
         if (route) {
             this.onBeforeNavigateHandler({route: route.route, params: route.params, element: route.element, hashChangedEvent: event});
             this.current = route;

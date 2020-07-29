@@ -1,10 +1,21 @@
 ﻿@page "/"
 
-<div class="text-center" data-route="#">
+@section Head
+{
+    <style>[data-route] { display: none; }</style>
+}
+
+<div class="text-center" data-route="/">
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
 
-<div data-route="#privacy">
+<div data-route="/privacy">
     <p>Use this page to detail your site's privacy policy.</p>
+</div>
+
+
+<div data-route="/parametrized" data-route-params='{"foo": "bar", "i": 1, "b": true}'>
+    <p>This is parameterized view.</p>
+    <div></div>
 </div>

@@ -6,12 +6,13 @@
     <title>SpaDotNetCoreApp</title>
 
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css"
-          asp-fallback-href="~/lib/twitter-bootstrap/css/bootstrap.min.css"
-          asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute"
-          crossorigin="anonymous"
-          integrity="sha512-rO2SXEKBSICa/AfyhEK5ZqWFCOok1rcgPYfGOqtX35OyiraBg6Xa4NnBJwXgpIRoXeWjcAmcQniMhp22htDc6g==" />
+        asp-fallback-href="~/lib/twitter-bootstrap/css/bootstrap.min.css"
+        asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute"
+        crossorigin="anonymous"
+        integrity="sha512-rO2SXEKBSICa/AfyhEK5ZqWFCOok1rcgPYfGOqtX35OyiraBg6Xa4NnBJwXgpIRoXeWjcAmcQniMhp22htDc6g==" />
 
     <link rel="stylesheet" href="~/css/site.css" />
+    @await RenderSectionAsync("Head", required: false)
 </head>
 <body>
     <header>
@@ -28,6 +29,18 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" href="#/privacy">Privacy</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" href="#/parametrized">parametrized</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" href="#/parametrized/a/b">/parametrized/a/b</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" href="#/parametrized/a/b/c">/parametrized/a/b/c</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" href="#/parametrized/a/b/c/d">/parametrized/a/b/c/d</a>
                         </li>
                     </ul>
                 </div>
@@ -58,6 +71,7 @@
             integrity="sha512-wxiDgcPPzAXWb46GDxmzktEzYx8lLg0vInaF2pen2GSo8XiclWw3XBlyKS42Nz3ZusdDJdMGUVllVYyfzcYu1g==">
     </script>
     <script>System.import("@this.AddFileVersionToPath("/js/app.js")").then(function () { System.import('main'); });</script>
-    
+
+    @await RenderSectionAsync("Bottom", required: false)
 </body>
 </html>

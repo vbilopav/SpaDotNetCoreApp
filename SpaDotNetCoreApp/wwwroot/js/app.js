@@ -8,7 +8,7 @@ System.register("router", [], function (exports_1, context_1) {
             Router = class Router {
                 constructor(args = {}) {
                     this.hashChar = "#";
-                    this.onErrorHandler = (hashChangedEvent) => { throw new Error(`Unknown route: ${hashChangedEvent.newURL}`); };
+                    this.onErrorHandler = event => { throw new Error(`Unknown route: ${event.hashChangedEvent.newURL}`); };
                     this.onBeforeNavigateHandler = route => { };
                     this.onBeforeLeaveHandler = route => { };
                     this.onNavigateHandler = route => { };
@@ -21,13 +21,15 @@ System.register("router", [], function (exports_1, context_1) {
                     this.hashChar = args.hashChar;
                     this.routes = {};
                     for (let e of args.element.querySelectorAll("[data-route]")) {
-                        let element = e, route = element.dataset["route"], p = element.dataset["routeParams"], paramMap = null, params = {}, defaultParams = {};
+                        let element = e, route = element.dataset["route"];
                         if (!args.test(route)) {
                             throw new Error(`Invalid route definition: ${route}`);
                         }
                         if (!route.startsWith("/")) {
                             throw new Error(`Invalid route definition: ${route}`);
                         }
+                        let defaultParams = {}, paramMap = null;
+                        const p = element.dataset["routeParams"], params = {};
                         if (!p) {
                             paramMap = new Map();
                         }
@@ -40,7 +42,11 @@ System.register("router", [], function (exports_1, context_1) {
                                 console.error(`Couldn't deserialize default params for route ${route}: ${e}.\nMake sure that "${p}" is valid JSON...`);
                             }
                         }
-                        this.routes[route] = { route, element, defaultParams, paramMap, params };
+                        let templateUrl = element.dataset["routeTemplateUrl"];
+                        if (!templateUrl) {
+                            templateUrl = null;
+                        }
+                        this.routes[route] = { route, element, defaultParams, paramMap, params, templateUrl };
                     }
                 }
                 start() {
@@ -68,13 +74,23 @@ System.register("router", [], function (exports_1, context_1) {
                     this.onBeforeLeaveHandler = event;
                     return this;
                 }
+                navigate(route) {
+                    document.location.hash = this.hashChar + route;
+                    return this;
+                }
+                reveal(route) {
+                    this.revealUri(route, null);
+                }
                 onHashChange(event) {
                     let hash = document.location.hash;
                     if (hash && event.newURL) {
                         hash = event.newURL.replace(document.location.origin + document.location.pathname, "");
                     }
                     hash = hash.replace(document.location.search, "");
-                    let uri = hash.replace(this.hashChar, ""), uriPieces = uri.split("/").map(item => decodeURIComponent(item)), route, candidate, test = "";
+                    this.revealUri(hash.replace(this.hashChar, ""), event);
+                }
+                async revealUri(uri, event) {
+                    let uriPieces = uri.split("/").map(item => decodeURIComponent(item)), route, candidate, test = "";
                     let i, len, sliceIndex;
                     for (i = 0, len = uriPieces.length; i < len; i++) {
                         let piece = uriPieces[i];
@@ -86,9 +102,9 @@ System.register("router", [], function (exports_1, context_1) {
                         }
                     }
                     if (this.current) {
-                        this.onBeforeLeaveHandler({ route: this.current.route, params: this.current.params, element: this.current.element, hashChangedEvent: event });
+                        this.onBeforeLeaveHandler({ route: this.current.route, params: this.current.params, router: this, element: this.current.element, hashChangedEvent: event });
                         this.current.element.style["display"] = "none";
-                        this.onLeaveHandler({ route: this.current.route, params: this.current.params, element: this.current.element, hashChangedEvent: event });
+                        this.onLeaveHandler({ route: this.current.route, params: this.current.params, router: this, element: this.current.element, hashChangedEvent: event });
                     }
                     if (uriPieces[uriPieces.length - 1] == "") {
                         uriPieces.splice(-1, 1);
@@ -113,14 +129,33 @@ System.register("router", [], function (exports_1, context_1) {
                         }
                     }
                     if (route) {
-                        this.onBeforeNavigateHandler({ route: route.route, params: route.params, element: route.element, hashChangedEvent: event });
+                        this.onBeforeNavigateHandler({ route: route.route, params: route.params, router: this, element: route.element, hashChangedEvent: event });
+                        if (route.templateUrl) {
+                            let result = [];
+                            let i = 0, idx;
+                            const values = Array.from(route.paramMap.values());
+                            for (let piece of route.templateUrl.split(/{/)) {
+                                idx = piece.indexOf("}");
+                                if (idx != -1) {
+                                    result.push(values[i++] + piece.substring(idx + 1, piece.length));
+                                }
+                                else {
+                                    result.push(piece);
+                                }
+                            }
+                            const response = await fetch(result.join(""), { method: "get" });
+                            if (!response.ok) {
+                                this.onErrorHandler({ route: route.route, params: route.params, router: this, element: route.element, hashChangedEvent: event });
+                            }
+                            route.element.innerHTML = await response.text();
+                        }
                         this.current = route;
                         this.current.element.style["display"] = "contents";
-                        this.onNavigateHandler({ route: this.current.route, params: this.current.params, element: this.current.element, hashChangedEvent: event });
+                        this.onNavigateHandler({ route: this.current.route, params: this.current.params, router: this, element: this.current.element, hashChangedEvent: event });
                     }
                     else {
                         this.current = null;
-                        this.onErrorHandler(event);
+                        this.onErrorHandler({ route: null, params: null, router: this, element: this.current.element, hashChangedEvent: event });
                     }
                 }
             };
@@ -141,8 +176,12 @@ System.register("main", ["router"], function (exports_2, context_2) {
         execute: function () {
             new router_1.default()
                 .onNavigate(e => {
-                e.element.querySelector("div").innerHTML = JSON.stringify(e.params);
+                let paramsElement = e.element.querySelector(".params");
+                if (paramsElement) {
+                    paramsElement.innerHTML = JSON.stringify(e.params);
+                }
             })
+                .onError(e => e.router.navigate("/error"))
                 .start();
         }
     };

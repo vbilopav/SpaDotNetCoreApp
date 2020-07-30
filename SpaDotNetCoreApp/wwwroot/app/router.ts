@@ -1,14 +1,16 @@
 ﻿interface IRoute {
     route: string,
     element: HTMLElement,
-    defaultParams: Record<string, any>
-    paramMap: Map<string, any>
-    params: Record<string, any>
+    defaultParams: Record<string, any>,
+    paramMap: Map<string, any>,
+    params: Record<string, any>,
+    templateUrl: string
 }
 
 type RouteEventArgs = {
     route: string, 
     params: Record<string, any>, 
+    router: Router,
     element: HTMLElement,
     hashChangedEvent: HashChangeEvent
 };
@@ -19,12 +21,12 @@ type IRouterCtorArgs = {
     test?: (route: string) => boolean;
 }
 
-type ErrorEvent = (hashChangedEvent: HashChangeEvent) => void;
+type ErrorEvent = (event: RouteEventArgs) => void;
 type RouteEvent = (event: RouteEventArgs) => void;
 
 export default class Router {
     private hashChar = "#";
-    private onErrorHandler: ErrorEvent = (hashChangedEvent: HashChangeEvent) => {throw new Error(`Unknown route: ${hashChangedEvent.newURL}`)};
+    private onErrorHandler: ErrorEvent = event => {throw new Error(`Unknown route: ${event.hashChangedEvent.newURL}`)};
     private onBeforeNavigateHandler: RouteEvent = route => {};
     private onBeforeLeaveHandler: RouteEvent = route => {};
     private onNavigateHandler: RouteEvent = route => {};
@@ -42,18 +44,15 @@ export default class Router {
         this.hashChar = args.hashChar;
         this.routes = {};
         for(let e of args.element.querySelectorAll("[data-route]")) {
-            let element = (e as HTMLElement),
-                route = element.dataset["route"] as string,
-                p = element.dataset["routeParams"] as string,
-                paramMap = null,
-                params = {},
-                defaultParams = {};
+            let element = (e as HTMLElement), route = element.dataset["route"] as string;
             if (!args.test(route)) {
                 throw new Error(`Invalid route definition: ${route}`);
             }
             if (!route.startsWith("/")) {
                 throw new Error(`Invalid route definition: ${route}`);
             }
+            let defaultParams = {}, paramMap = null;
+            const p = element.dataset["routeParams"] as string, params = {};
             if (!p) {
                 paramMap = new Map<string, any>();
             } else {
@@ -64,7 +63,11 @@ export default class Router {
                     console.error(`Couldn't deserialize default params for route ${route}: ${e}.\nMake sure that "${p}" is valid JSON...`);
                 }
             }
-            this.routes[route] = {route, element, defaultParams, paramMap, params};
+            let templateUrl = element.dataset["routeTemplateUrl"] as string;
+            if (!templateUrl) {
+                templateUrl = null;
+            }
+            this.routes[route] = {route, element, defaultParams, paramMap, params, templateUrl};
         }
         
     }
@@ -100,14 +103,26 @@ export default class Router {
         return this;
     }
 
+    public navigate(route: string) {
+        document.location.hash = this.hashChar + route;
+        return this;
+    }
+
+    public reveal(route: string) {
+        this.revealUri(route, null);
+    }
+
     private onHashChange(event: HashChangeEvent) {
         let hash = document.location.hash;
         if (hash && event.newURL) {
             hash = event.newURL.replace(document.location.origin + document.location.pathname, "");
         }
         hash = hash.replace(document.location.search, "");
+        this.revealUri(hash.replace(this.hashChar, ""), event);
+    }
+
+    private async revealUri(uri: string, event: HashChangeEvent) {
         let
-            uri = hash.replace(this.hashChar, ""),
             uriPieces = uri.split("/").map(item => decodeURIComponent(item)),
             route: IRoute,
             candidate: IRoute,
@@ -124,9 +139,9 @@ export default class Router {
             }
         }
         if (this.current) {
-            this.onBeforeLeaveHandler({route: this.current.route, params: this.current.params, element: this.current.element, hashChangedEvent: event});
+            this.onBeforeLeaveHandler({route: this.current.route, params: this.current.params, router: this, element: this.current.element, hashChangedEvent: event});
             this.current.element.style["display"] = "none";
-            this.onLeaveHandler({route: this.current.route, params: this.current.params, element: this.current.element, hashChangedEvent: event});
+            this.onLeaveHandler({route: this.current.route, params: this.current.params, router: this, element: this.current.element, hashChangedEvent: event});
         }
 
         if (uriPieces[uriPieces.length - 1] == "") {
@@ -151,13 +166,31 @@ export default class Router {
             }
         }
         if (route) {
-            this.onBeforeNavigateHandler({route: route.route, params: route.params, element: route.element, hashChangedEvent: event});
+            this.onBeforeNavigateHandler({route: route.route, params: route.params, router: this, element: route.element, hashChangedEvent: event});
+            if (route.templateUrl) {
+                let result = [];
+                let i = 0, idx: number;
+                const values = Array.from(route.paramMap.values());
+                for(let piece of route.templateUrl.split(/{/)) {
+                    idx = piece.indexOf("}");
+                    if (idx != -1) {
+                        result.push(values[i++] + piece.substring(idx + 1, piece.length));
+                    } else {
+                        result.push(piece);
+                    }
+                }
+                const response = await fetch(result.join(""), { method: "get" });
+                if (!response.ok) {
+                    this.onErrorHandler({route: route.route, params: route.params, router: this, element: route.element, hashChangedEvent: event});
+                }
+                route.element.innerHTML = await response.text();
+            }            
             this.current = route;
             this.current.element.style["display"] = "contents";
-            this.onNavigateHandler({route: this.current.route, params: this.current.params, element: this.current.element, hashChangedEvent: event});
+            this.onNavigateHandler({route: this.current.route, params: this.current.params, router: this, element: this.current.element, hashChangedEvent: event});
         } else {
             this.current = null;
-            this.onErrorHandler(event);
+            this.onErrorHandler({route: null, params: null, router: this, element: this.current.element, hashChangedEvent: event});
         }
     }
 }

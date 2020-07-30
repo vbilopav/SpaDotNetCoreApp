@@ -6,15 +6,20 @@
 }
 
 <div class="text-center" data-route="/">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <partial name="Views/_Home" />
 </div>
 
 <div data-route="/privacy">
-    <p>Use this page to detail your site's privacy policy.</p>
+    <partial name="Views/_Privacy" />
 </div>
 
 <div data-route="/parametrized" data-route-params='{"foo": "bar", "i": 1, "b": true}'>
-    <p>This is parameterized view.</p>
-    <div></div>
+    <partial name="Views/_Parametrized" />
+</div>
+
+<div data-route="/server-template" data-route-template-url="/template1/{param1}/{param2}" data-route-params='{"param1": "default1", "param2": "default2"}'>
+</div>
+
+<div data-route="/error">
+    Invalid route
 </div>

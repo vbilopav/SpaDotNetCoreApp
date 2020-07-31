@@ -13,13 +13,16 @@
     <partial name="Views/_Privacy" />
 </div>
 
-<div data-route="/parametrized" data-route-params='{"foo": "bar", "i": 1, "b": true}'>
+<div data-route="/parametrized" 
+     data-route-params='{"foo": "bar", "i": 1, "b": true}'>
     <partial name="Views/_Parametrized" />
 </div>
 
-<div data-route="/server-template" data-route-template-url="/template1/{param1}/{param2}" data-route-params='{"param1": "default1", "param2": "default2"}'>
+<div data-route="/rest-template" 
+     data-route-template-url="/template1/{param1}/{param2}" 
+     data-route-params='{"param1": "default1", "param2": "default2"}'>
 </div>
 
 <div data-route="/error">
-    Invalid route
+    <partial name="Views/_Error" />
 </div>

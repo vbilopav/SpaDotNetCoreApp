@@ -109,7 +109,7 @@ export default class Router {
     }
 
     public reveal(route: string) {
-        this.revealUri(route, null);
+        return this.revealUri(route, null);
     }
 
     private onHashChange(event: HashChangeEvent) {
@@ -139,9 +139,10 @@ export default class Router {
             }
         }
         if (this.current) {
-            this.onBeforeLeaveHandler({route: this.current.route, params: this.current.params, router: this, element: this.current.element, hashChangedEvent: event});
+            const args = this.buildRouteEventArgs(this.current, event);
+            this.onBeforeLeaveHandler(args);
             this.current.element.style["display"] = "none";
-            this.onLeaveHandler({route: this.current.route, params: this.current.params, router: this, element: this.current.element, hashChangedEvent: event});
+            this.onLeaveHandler(args);
         }
 
         if (uriPieces[uriPieces.length - 1] == "") {
@@ -166,7 +167,9 @@ export default class Router {
             }
         }
         if (route) {
-            this.onBeforeNavigateHandler({route: route.route, params: route.params, router: this, element: route.element, hashChangedEvent: event});
+            this.current = route;
+            const args = this.buildRouteEventArgs(this.current, event);
+            this.onBeforeNavigateHandler(args);
             if (route.templateUrl) {
                 let result = [];
                 let i = 0, idx: number;
@@ -181,16 +184,28 @@ export default class Router {
                 }
                 const response = await fetch(result.join(""), { method: "get" });
                 if (!response.ok) {
-                    this.onErrorHandler({route: route.route, params: route.params, router: this, element: route.element, hashChangedEvent: event});
+                    this.onErrorHandler(args);
                 }
                 route.element.innerHTML = await response.text();
-            }            
-            this.current = route;
+            }
             this.current.element.style["display"] = "contents";
-            this.onNavigateHandler({route: this.current.route, params: this.current.params, router: this, element: this.current.element, hashChangedEvent: event});
+            this.onNavigateHandler(args);
+            return args;
         } else {
             this.current = null;
-            this.onErrorHandler({route: null, params: null, router: this, element: this.current.element, hashChangedEvent: event});
+            const args = this.buildRouteEventArgs(null, event);
+            this.onErrorHandler(args);
+            return args;
+        }
+    }
+
+    private buildRouteEventArgs(route: IRoute, event: HashChangeEvent) : RouteEventArgs {
+        return {
+            route: route == null ? null : route.route, 
+            params: route == null ? null : route.params, 
+            router: this, 
+            element: route == null ? null : route.element, 
+            hashChangedEvent: event
         }
     }
 }

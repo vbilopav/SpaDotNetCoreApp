@@ -1,23 +1,23 @@
 ﻿interface IRoute {
-    route: string,
-    element: HTMLElement,
-    defaultParams: Record<string, any>,
-    paramMap: Map<string, any>,
-    params: Record<string, any>,
-    templateUrl: string
+    route: string;
+    element: HTMLElement;
+    defaultParams: Record<string, any>;
+    paramMap: Map<string, any>;
+    params: Record<string, any>;
+    templateUrl: string;
 }
 
 type RouteEventArgs = {
-    route: string, 
-    params: Record<string, any>, 
-    router: Router,
-    element: HTMLElement,
-    hashChangedEvent: HashChangeEvent
+    route: string;
+    params: Record<string, any>;
+    router: Router;
+    element: HTMLElement;
+    hashChangedEvent: HashChangeEvent;
 };
 
 type IRouterCtorArgs = {
-    element?: Element,
-    hashChar?: string,
+    element?: Element;
+    hashChar?: string;
     test?: (route: string) => boolean;
 }
 

@@ -90,7 +90,8 @@ System.register("router", [], function (exports_1, context_1) {
                     this.revealUri(hash.replace(this.hashChar, ""), event);
                 }
                 async revealUri(uri, event) {
-                    let uriPieces = uri.split("/").map(item => decodeURIComponent(item)), route, candidate, test = "";
+                    const uriPieces = uri.split("/").map(item => decodeURIComponent(item));
+                    let route, candidate, test = "";
                     let i, len, sliceIndex;
                     for (i = 0, len = uriPieces.length; i < len; i++) {
                         let piece = uriPieces[i];
@@ -107,10 +108,10 @@ System.register("router", [], function (exports_1, context_1) {
                         this.current.element.style["display"] = "none";
                         this.onLeaveHandler(args);
                     }
-                    if (uriPieces[uriPieces.length - 1] == "") {
+                    if (uriPieces[uriPieces.length - 1] === "") {
                         uriPieces.splice(-1, 1);
                     }
-                    let pieces = uriPieces.slice(sliceIndex);
+                    const pieces = uriPieces.slice(sliceIndex);
                     if (route) {
                         if (pieces.length > route.paramMap.size) {
                             route = null;

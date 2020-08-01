@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Hosting
+@using Microsoft.Extensions.Hosting
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -11,7 +13,7 @@
         crossorigin="anonymous"
         integrity="sha512-rO2SXEKBSICa/AfyhEK5ZqWFCOok1rcgPYfGOqtX35OyiraBg6Xa4NnBJwXgpIRoXeWjcAmcQniMhp22htDc6g==" />
 
-    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/site.min.css" />
     @await RenderSectionAsync("Head", required: false)
 </head>
 <body>
@@ -48,8 +50,12 @@
             asp-fallback-test="window.System.registerRegistry" crossorigin="anonymous"
             integrity="sha512-wxiDgcPPzAXWb46GDxmzktEzYx8lLg0vInaF2pen2GSo8XiclWw3XBlyKS42Nz3ZusdDJdMGUVllVYyfzcYu1g==">
     </script>
-    <script>System.import("@this.AddFileVersionToPath("/js/app.js")").then(function () { System.import('main'); });</script>
-
+    <environment exclude="Development">
+        <script>System.import("@this.AddFileVersionToPath("/app.min.js")").then(function () { System.import('main'); });</script>
+    </environment>
+    <environment include="Development">
+        <script>System.import("@this.AddFileVersionToPath("/app.js")").then(function () { System.import('main'); });</script>
+    </environment>
     @await RenderSectionAsync("Bottom", required: false)
 </body>
 </html>

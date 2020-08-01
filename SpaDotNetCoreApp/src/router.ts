@@ -15,7 +15,7 @@ type RouteEventArgs = {
     hashChangedEvent: HashChangeEvent;
 };
 
-type IRouterCtorArgs = {
+type RouterCtorArgs = {
     element?: Element;
     hashChar?: string;
     test?: (route: string) => boolean;
@@ -35,7 +35,7 @@ export default class Router {
     public current: IRoute;
     public routes: Record<string, IRoute>;
 
-    constructor(args: IRouterCtorArgs = {}) {
+    constructor(args: RouterCtorArgs = {}) {
         args = Object.assign({
             element: document.body,
             hashChar: "#",
@@ -122,12 +122,8 @@ export default class Router {
     }
 
     private async revealUri(uri: string, event: HashChangeEvent) {
-        let
-            uriPieces = uri.split("/").map(item => decodeURIComponent(item)),
-            route: IRoute,
-            candidate: IRoute,
-            test = "";
-            
+        const uriPieces = uri.split("/").map(item => decodeURIComponent(item));
+        let route: IRoute, candidate: IRoute, test = "";
         let i: number, len: number, sliceIndex: number;
         for (i = 0, len = uriPieces.length; i < len; i++) {
             let piece = uriPieces[i];
@@ -145,10 +141,10 @@ export default class Router {
             this.onLeaveHandler(args);
         }
 
-        if (uriPieces[uriPieces.length - 1] == "") {
+        if (uriPieces[uriPieces.length - 1] === "") {
             uriPieces.splice(-1, 1);
         }
-        let pieces = uriPieces.slice(sliceIndex);
+        const pieces = uriPieces.slice(sliceIndex);
         if (route) {
             if (pieces.length > route.paramMap.size) {
                 route = null;
@@ -199,7 +195,7 @@ export default class Router {
         }
     }
 
-    private buildRouteEventArgs(route: IRoute, event: HashChangeEvent) : RouteEventArgs {
+    private buildRouteEventArgs(route: IRoute, event: HashChangeEvent): RouteEventArgs {
         return {
             route: route == null ? null : route.route, 
             params: route == null ? null : route.params, 

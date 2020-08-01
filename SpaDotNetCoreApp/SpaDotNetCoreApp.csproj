@@ -3,11 +3,11 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <CopyRefAssembliesToPublishDirectory>false</CopyRefAssembliesToPublishDirectory>
+    <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="wwwroot\app\main.ts" />
-    <Content Remove="wwwroot\app\router.ts" />
+    <TypeScriptCompile Remove="node_modules\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -16,18 +16,42 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\lib\" />
+    <Folder Include="wwwroot\css\" />
   </ItemGroup>
 
   <ItemGroup>
-    <TypeScriptCompile Include="wwwroot\app\router.ts">
+    <Content Include="src\site.scss" />
+    <Content Include="src\router.ts">
       <SubType>Code</SubType>
-    </TypeScriptCompile>
-    <TypeScriptCompile Include="wwwroot\app\main.ts" />
+    </Content>
+    <Content Include="src\main.ts" />
   </ItemGroup>
 
 
   <ItemGroup>
     <Protobuf Include="Protos\templates.proto" GrpcServices="Server" />
   </ItemGroup>
+
+
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+    <Exec Command="npm run build-all" />
+  </Target>
+
+
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+    <TypeScriptTarget>ES2019</TypeScriptTarget>
+    <TypeScriptJSXEmit>None</TypeScriptJSXEmit>
+    <TypeScriptModuleKind>System</TypeScriptModuleKind>
+    <TypeScriptCompileOnSaveEnabled>False</TypeScriptCompileOnSaveEnabled>
+    <TypeScriptNoImplicitAny>False</TypeScriptNoImplicitAny>
+    <TypeScriptRemoveComments>False</TypeScriptRemoveComments>
+    <TypeScriptOutFile />
+    <TypeScriptOutDir />
+    <TypeScriptGeneratesDeclarations>False</TypeScriptGeneratesDeclarations>
+    <TypeScriptNoEmitOnError>True</TypeScriptNoEmitOnError>
+    <TypeScriptSourceMap>True</TypeScriptSourceMap>
+    <TypeScriptMapRoot />
+    <TypeScriptSourceRoot />
+  </PropertyGroup>
 
 </Project>

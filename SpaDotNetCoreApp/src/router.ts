@@ -22,7 +22,7 @@ type RouterCtorArgs = {
 }
 
 type ErrorEvent = (event: RouteEventArgs) => void;
-type RouteEvent = (event: RouteEventArgs) => void;
+type RouteEvent = (event: RouteEventArgs) => void | boolean | Promise<void> | Promise<boolean>;
 
 export default class Router {
     private hashChar = "#";
@@ -134,11 +134,30 @@ export default class Router {
                 sliceIndex = i + 1;
             }
         }
+        let eventResult: void | boolean | Promise<void> | Promise<boolean>;
         if (this.current) {
             const args = this.buildRouteEventArgs(this.current, event);
-            this.onBeforeLeaveHandler(args);
+            eventResult = this.onBeforeLeaveHandler(args);
+            if (eventResult == false) {
+                return;
+            }
+            if (eventResult instanceof Promise) {
+                eventResult = await eventResult;
+                if (eventResult == false) {
+                    return;
+                }
+            }
             this.current.element.style["display"] = "none";
-            this.onLeaveHandler(args);
+            eventResult = this.onLeaveHandler(args);
+            if (eventResult == false) {
+                return;
+            }
+            if (eventResult instanceof Promise) {
+                eventResult = await eventResult;
+                if (eventResult == false) {
+                    return;
+                }
+            }
         }
 
         if (uriPieces[uriPieces.length - 1] === "") {
@@ -165,7 +184,16 @@ export default class Router {
         if (route) {
             this.current = route;
             const args = this.buildRouteEventArgs(this.current, event);
-            this.onBeforeNavigateHandler(args);
+            eventResult = this.onBeforeNavigateHandler(args);
+            if (eventResult == false) {
+                return;
+            }
+            if (eventResult instanceof Promise) {
+                eventResult = await eventResult;
+                if (eventResult == false) {
+                    return;
+                }
+            }
             if (route.templateUrl) {
                 let result = [];
                 let i = 0, idx: number;
@@ -185,7 +213,10 @@ export default class Router {
                 route.element.innerHTML = await response.text();
             }
             this.current.element.style["display"] = "contents";
-            this.onNavigateHandler(args);
+            eventResult = this.onNavigateHandler(args);
+            if (eventResult instanceof Promise) {
+                await eventResult;
+            }
             return args;
         } else {
             this.current = null;

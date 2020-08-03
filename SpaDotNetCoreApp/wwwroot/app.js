@@ -102,11 +102,30 @@ System.register("router", [], function (exports_1, context_1) {
                             sliceIndex = i + 1;
                         }
                     }
+                    let eventResult;
                     if (this.current) {
                         const args = this.buildRouteEventArgs(this.current, event);
-                        this.onBeforeLeaveHandler(args);
+                        eventResult = this.onBeforeLeaveHandler(args);
+                        if (eventResult == false) {
+                            return;
+                        }
+                        if (eventResult instanceof Promise) {
+                            eventResult = await eventResult;
+                            if (eventResult == false) {
+                                return;
+                            }
+                        }
                         this.current.element.style["display"] = "none";
-                        this.onLeaveHandler(args);
+                        eventResult = this.onLeaveHandler(args);
+                        if (eventResult == false) {
+                            return;
+                        }
+                        if (eventResult instanceof Promise) {
+                            eventResult = await eventResult;
+                            if (eventResult == false) {
+                                return;
+                            }
+                        }
                     }
                     if (uriPieces[uriPieces.length - 1] === "") {
                         uriPieces.splice(-1, 1);
@@ -133,7 +152,16 @@ System.register("router", [], function (exports_1, context_1) {
                     if (route) {
                         this.current = route;
                         const args = this.buildRouteEventArgs(this.current, event);
-                        this.onBeforeNavigateHandler(args);
+                        eventResult = this.onBeforeNavigateHandler(args);
+                        if (eventResult == false) {
+                            return;
+                        }
+                        if (eventResult instanceof Promise) {
+                            eventResult = await eventResult;
+                            if (eventResult == false) {
+                                return;
+                            }
+                        }
                         if (route.templateUrl) {
                             let result = [];
                             let i = 0, idx;
@@ -154,7 +182,10 @@ System.register("router", [], function (exports_1, context_1) {
                             route.element.innerHTML = await response.text();
                         }
                         this.current.element.style["display"] = "contents";
-                        this.onNavigateHandler(args);
+                        eventResult = this.onNavigateHandler(args);
+                        if (eventResult instanceof Promise) {
+                            await eventResult;
+                        }
                         return args;
                     }
                     else {

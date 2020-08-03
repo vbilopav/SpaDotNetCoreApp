@@ -20,11 +20,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="src\site.scss" />
-    <Content Include="src\router.ts">
-      <SubType>Code</SubType>
-    </Content>
-    <Content Include="src\main.ts" />
+    <None Include="wwwroot\src\main.ts" />
+    <None Include="wwwroot\src\router.ts" />
+    <None Include="wwwroot\src\site.scss" />
   </ItemGroup>
 
 
@@ -45,6 +43,9 @@
     </Content>
     <Content Update="tsconfig.json">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\src\router.ts">
+      <SubType>Code</SubType>
     </Content>
   </ItemGroup>
 

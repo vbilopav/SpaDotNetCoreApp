@@ -12,6 +12,7 @@
             [
                 "@babel/preset-env",
                 {
+                    "debug": true,
                     "targets": {
                         "esmodules": true
                     }
@@ -25,6 +26,7 @@
         "tsc-build": "tsc -p ./tsconfig.json",
         "transpile": "babel -o /wwwroot/app.min.js ./wwwroot/app.js",
         "scss": "node-sass ./src/site.scss > ./wwwroot/css/site.min.css --output-style compressed",
+        "build-js": "npm run tsc-build && npm run transpile",
         "build-all": "npm run tsc-build && npm run transpile && npm run scss"
     }
 }

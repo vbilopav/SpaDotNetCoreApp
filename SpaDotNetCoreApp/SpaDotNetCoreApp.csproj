@@ -33,6 +33,22 @@
   </ItemGroup>
 
 
+  <ItemGroup>
+    <Content Update="libman.json">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Content>
+    <Content Update="package-lock.json">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Content>
+    <Content Update="package.json">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Content>
+    <Content Update="tsconfig.json">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
     <Exec Command="npm run build-all" />
   </Target>

@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "ES2019", /* Specify ECMAScript target version: 'ES3' (default), 'ES5', 'ES2015', 'ES2016', 'ES2017', 'ES2018', 'ES2019' or 'ESNEXT'. */
     "module": "system", /* Specify module code generation: 'none', 'commonjs', 'amd', 'system', 'umd', 'es2015', or 'ESNext'. */
-    "sourceMap": true, /* Generates corresponding '.map' file. */
+    "inlineSourceMap": true, /**/
     "outFile": "./wwwroot/app.js", /* Concatenate and emit output to single file. */
     "removeComments": false, /* Do not emit comments to output. */
     "strict": false, /* Enable all strict type-checking options. */

@@ -38,15 +38,15 @@ namespace SpaDotNetCoreApp
 #if !DEBUG
             env.EnvironmentName = "Production";
 #endif
-
             if (env.IsDevelopment())
             {
+                var srcDir = Configuration.GetValue<string>("SrcDir") ?? "src";
                 app.UseDeveloperExceptionPage();
-                var fileProvider = new PhysicalFileProvider(Path.Join(Directory.GetCurrentDirectory(), "src"));
+                var fileProvider = new PhysicalFileProvider(Path.Join(Directory.GetCurrentDirectory(), srcDir));
                 app.UseStaticFiles(new StaticFileOptions
                 {
                     FileProvider = fileProvider,
-                    RequestPath = new PathString("/src")
+                    RequestPath = new PathString($"/{srcDir}")
                 });
             }
             else

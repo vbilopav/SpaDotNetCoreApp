@@ -11,18 +11,20 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="src\main.ts" />
+    <Content Include="src\router.ts">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="src\site.scss" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="3.1.6" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="wwwroot\lib\" />
     <Folder Include="wwwroot\css\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="wwwroot\src\main.ts" />
-    <None Include="wwwroot\src\router.ts" />
-    <None Include="wwwroot\src\site.scss" />
   </ItemGroup>
 
 
@@ -43,9 +45,6 @@
     </Content>
     <Content Update="tsconfig.json">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Content>
-    <Content Update="wwwroot\src\router.ts">
-      <SubType>Code</SubType>
     </Content>
   </ItemGroup>
 

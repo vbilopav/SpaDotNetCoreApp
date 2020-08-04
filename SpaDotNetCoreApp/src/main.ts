@@ -11,3 +11,6 @@ new Router()
     .onNavigate(e => updateElement(e.element, ".params", JSON.stringify(e.params)))
     .onError(e => e.router.reveal("/error").then(args => updateElement(args.element, "code", document.location.hash)))
     .start();
+
+
+console.log("hello world");

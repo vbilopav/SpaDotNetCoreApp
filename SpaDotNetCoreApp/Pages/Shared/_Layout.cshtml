@@ -1,6 +1,4 @@
-﻿@using Microsoft.AspNetCore.Hosting
-@using Microsoft.Extensions.Hosting
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -39,22 +37,11 @@
         </div>
     </footer>
 
-    <script src="//cdnjs.cloudflare.com/ajax/libs/systemjs/6.2.3/system.min.js"
-            asp-fallback-src="~/lib/systemjs/system.min.js"
-            asp-fallback-test="window.System" 
-            crossorigin="anonymous"
-            integrity="sha512-X+43WJcsu13RFX9wxhlsJJzG987y9/aVdodotZGwu4HojZGSvyw+pIL/CnXUCZKR4ckOj/QZyHeclkOk7Esr8w==">
-    </script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/systemjs/6.2.3/extras/named-register.min.js"
-            asp-fallback-src="~/lib/systemjs/extras/named-register.min.js"
-            asp-fallback-test="window.System.registerRegistry" crossorigin="anonymous"
-            integrity="sha512-wxiDgcPPzAXWb46GDxmzktEzYx8lLg0vInaF2pen2GSo8XiclWw3XBlyKS42Nz3ZusdDJdMGUVllVYyfzcYu1g==">
-    </script>
     <environment exclude="Development">
-        <script>System.import("@this.AddFileVersionToPath("/app.min.js")").then(function () { System.import('main'); });</script>
+        <script src="~/app.min.js" asp-append-version="true"></script>
     </environment>
     <environment include="Development">
-        <script>System.import("@this.AddFileVersionToPath("/app.js")").then(function () { System.import('main'); });</script>
+        <script src="~/app.js" asp-append-version="true"></script>
     </environment>
     @await RenderSectionAsync("Bottom", required: false)
 </body>

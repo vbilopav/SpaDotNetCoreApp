@@ -9,14 +9,5 @@
         "css/bootstrap.min.css"
       ]
     }
-  ,
-{
-  "library": "systemjs@6.2.3",
-  "destination": "wwwroot/lib/systemjs/",
-  "files": [
-    "system.min.js",
-    "extras/named-register.min.js"
   ]
-}
-]
 }

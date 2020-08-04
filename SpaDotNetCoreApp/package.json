@@ -5,7 +5,11 @@
         "@babel/core": "^7.11.0",
         "@babel/preset-env": "^7.11.0",
         "babel-preset-minify": "^0.5.1",
-        "node-sass": "^4.14.1"
+        "browserify": "^16.5.2",
+        "node-sass": "^4.14.1",
+        "tsify": "^5.0.0",
+        "typescript": "^3.9.7",
+        "watchify": "^3.11.1"
     },
     "babel": {
         "presets": [
@@ -22,8 +26,8 @@
         ]
     },
     "scripts": {
-        "tsc-watch": "tsc -p ./tsconfig.json -w",
-        "tsc-build": "tsc -p ./tsconfig.json",
+        "tsc-watch": "watchify -p tsify ./src/main.ts -o ./wwwroot/app.js --debug",
+        "tsc-build": "browserify -p tsify ./src/main.ts > ./wwwroot/app.js --debug",
         "transpile": "babel -o ./wwwroot/app.min.js ./wwwroot/app.js",
         "scss": "node-sass ./src/site.scss > ./wwwroot/css/site.min.css --output-style compressed",
         "build-js": "npm run tsc-build && npm run transpile",

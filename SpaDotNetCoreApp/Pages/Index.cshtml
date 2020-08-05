@@ -23,6 +23,11 @@
      data-route-params='{"param1": "default1", "param2": "default2"}'>
 </div>
 
+<div data-route="/grpc-template"
+     data-route-grpc-template-service="/templates.GrpcTemplates/GetTemplate2"
+     data-route-params='{"1": "default1", "2:Int32": 1}'>
+</div>
+
 <div data-route="/error">
     <partial name="Views/_Error" />
 </div>

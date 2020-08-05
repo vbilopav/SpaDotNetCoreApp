@@ -2,7 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 class Router {
     constructor(args = {}) {
-        this.hashChar = "#";
         this.onErrorHandler = event => { throw new Error(`Unknown route: ${event.hashChangedEvent.newURL}`); };
         this.onBeforeNavigateHandler = route => { };
         this.onBeforeLeaveHandler = route => { };
@@ -11,9 +10,11 @@ class Router {
         args = Object.assign({
             element: document.body,
             hashChar: "#",
-            test: ((r) => /^[A-Za-z0-9_@()/.-]*$/.test(r))
+            test: ((r) => /^[A-Za-z0-9_@()/.-]*$/.test(r)),
+            renderPlugins: []
         }, args);
         this.hashChar = args.hashChar;
+        this.renderPlugins = args.renderPlugins;
         this.routes = {};
         for (let e of args.element.querySelectorAll("[data-route]")) {
             let element = e, route = element.dataset["route"];
@@ -37,11 +38,7 @@ class Router {
                     console.error(`Couldn't deserialize default params for route ${route}: ${e}.\nMake sure that "${p}" is valid JSON...`);
                 }
             }
-            let templateUrl = element.dataset["routeTemplateUrl"];
-            if (!templateUrl) {
-                templateUrl = null;
-            }
-            this.routes[route] = { route, element, defaultParams, paramMap, params, templateUrl };
+            this.routes[route] = { route, element, defaultParams, paramMap, params };
         }
     }
     start() {
@@ -157,11 +154,12 @@ class Router {
                     return;
                 }
             }
-            if (route.templateUrl) {
+            let templateUrl = route.element.dataset["routeTemplateUrl"];
+            if (templateUrl) {
                 let result = [];
                 let i = 0, idx;
                 const values = Array.from(route.paramMap.values());
-                for (let piece of route.templateUrl.split(/{/)) {
+                for (let piece of templateUrl.split(/{/)) {
                     idx = piece.indexOf("}");
                     if (idx != -1) {
                         result.push(values[i++] + piece.substring(idx + 1, piece.length));
@@ -175,6 +173,12 @@ class Router {
                     this.onErrorHandler(args);
                 }
                 route.element.innerHTML = await response.text();
+            }
+            for (let plugin of this.renderPlugins) {
+                let result = plugin(route);
+                if (result instanceof Promise) {
+                    await result;
+                }
             }
             this.current.element.style["display"] = "contents";
             eventResult = this.onNavigateHandler(args);
@@ -200,4 +204,4 @@ class Router {
         };
     }
 }
-exports.default = Router;
+exports.Router = Router;

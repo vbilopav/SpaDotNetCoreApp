@@ -163,22 +163,9 @@ class GrpcService {
         this.host = args.host;
     }
     unaryCall(args, ...params) {
-        args = Object.assign({
-            metadata: {},
-            request: new Array(),
-            replay: new Array()
-        }, args);
-        this.request = args.request;
-        this.replay = args.replay;
-        if (!args.service) {
-            throw args.service;
-        }
+        args = this.parseRpcCallArgs(args);
         return new Promise((resolve, reject) => {
-            this.client.rpcCall(`${this.host}${args.service}`, { array: params }, args.metadata, new grpcWeb.MethodDescriptor(args.service, grpcWeb.MethodType.UNARY, function (opt) {
-                jspb.Message.initialize(this, opt, 0, -1, null, null);
-            }, function (opt) {
-                jspb.Message.initialize(this, opt, 0, -1, null, null);
-            }, request => this.serializeBinary(request), bytes => this.deserializeBinary(bytes)), (error, response) => {
+            this.client.rpcCall(`${this.host}${args.service}`, { array: params }, args.metadata, this.createMethodDescriptor(args, false), (error, response) => {
                 if (error) {
                     return reject(error);
                 }
@@ -186,19 +173,41 @@ class GrpcService {
             });
         });
     }
-    serializeBinary(request) {
+    serverStreaming(args, ...params) {
+        args = this.parseRpcCallArgs(args);
+        return this.client.serverStreaming(`${this.host}${args.service}`, { array: params }, args.metadata, this.createMethodDescriptor(args, true));
+    }
+    parseRpcCallArgs(args) {
+        args = Object.assign({
+            metadata: {},
+            request: new Array(),
+            replay: new Array()
+        }, args);
+        if (!args.service) {
+            throw args.service;
+        }
+        return args;
+    }
+    createMethodDescriptor(args, isStreaming) {
+        return new grpcWeb.MethodDescriptor(args.service, (isStreaming ? grpcWeb.MethodType.SERVER_STREAMING : grpcWeb.MethodType.UNARY), function (opt) {
+            jspb.Message.initialize(this, opt, 0, -1, null, null);
+        }, function (opt) {
+            jspb.Message.initialize(this, opt, 0, -1, null, null);
+        }, request => this.serializeBinary(request, args.request), bytes => this.deserializeBinary(bytes, args.replay));
+    }
+    serializeBinary(request, requestTypes) {
         const writer = new jspb.BinaryWriter();
-        this.serializeBinaryToWriter(request, writer);
+        this.serializeBinaryToWriter(request, writer, requestTypes);
         return writer.getResultBuffer();
     }
-    serializeBinaryToWriter(message, writer) {
+    serializeBinaryToWriter(message, writer, requestTypes) {
         for (let i = 0, l = message.array.length; i < l; i++) {
-            let type = RequestType[indexOrDefault(this.request, i, RequestType.String)];
+            let type = RequestType[indexOrDefault(requestTypes, i, RequestType.String)];
             writer["write" + type](i + 1, message.array[i]);
         }
     }
     ;
-    deserializeBinary(bytes) {
+    deserializeBinary(bytes, replayTypes) {
         const result = {};
         const reader = new jspb.BinaryReader(bytes);
         while (reader.nextField()) {
@@ -206,7 +215,7 @@ class GrpcService {
                 break;
             }
             let field = reader.getFieldNumber();
-            let type = ReplayType[indexOrDefault(this.replay, field - 1, ReplayType.String)];
+            let type = ReplayType[indexOrDefault(replayTypes, field - 1, ReplayType.String)];
             result[field] = reader["read" + type]();
         }
         return result;

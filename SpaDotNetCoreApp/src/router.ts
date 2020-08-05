@@ -1,10 +1,9 @@
-﻿interface IRoute {
+﻿export interface IRoute {
     route: string;
     element: HTMLElement;
     defaultParams: Record<string, any>;
     paramMap: Map<string, any>;
     params: Record<string, any>;
-    templateUrl: string;
 }
 
 type RouteEventArgs = {
@@ -19,13 +18,15 @@ type RouterCtorArgs = {
     element?: Element;
     hashChar?: string;
     test?: (route: string) => boolean;
+    renderPlugins?: Array<(route: IRoute) => void | Promise<void>>;
 }
 
 type ErrorEvent = (event: RouteEventArgs) => void;
 type RouteEvent = (event: RouteEventArgs) => void | boolean | Promise<void> | Promise<boolean>;
 
-export default class Router {
-    private hashChar = "#";
+export class Router {
+    private hashChar: string;
+    private renderPlugins: Array<(route: IRoute) => void | Promise<void>>;
     private onErrorHandler: ErrorEvent = event => {throw new Error(`Unknown route: ${event.hashChangedEvent.newURL}`)};
     private onBeforeNavigateHandler: RouteEvent = route => {};
     private onBeforeLeaveHandler: RouteEvent = route => {};
@@ -39,9 +40,11 @@ export default class Router {
         args = Object.assign({
             element: document.body,
             hashChar: "#",
-            test: ((r: string) => /^[A-Za-z0-9_@()/.-]*$/.test(r))
+            test: ((r: string) => /^[A-Za-z0-9_@()/.-]*$/.test(r)),
+            renderPlugins: []
         }, args);
         this.hashChar = args.hashChar;
+        this.renderPlugins = args.renderPlugins;
         this.routes = {};
         for(let e of args.element.querySelectorAll("[data-route]")) {
             let element = (e as HTMLElement), route = element.dataset["route"] as string;
@@ -63,11 +66,7 @@ export default class Router {
                     console.error(`Couldn't deserialize default params for route ${route}: ${e}.\nMake sure that "${p}" is valid JSON...`);
                 }
             }
-            let templateUrl = element.dataset["routeTemplateUrl"] as string;
-            if (!templateUrl) {
-                templateUrl = null;
-            }
-            this.routes[route] = {route, element, defaultParams, paramMap, params, templateUrl};
+            this.routes[route] = {route, element, defaultParams, paramMap, params};
         }
         
     }
@@ -194,11 +193,13 @@ export default class Router {
                     return;
                 }
             }
-            if (route.templateUrl) {
+
+            let templateUrl = route.element.dataset["routeTemplateUrl"] as string;
+            if (templateUrl) {
                 let result = [];
                 let i = 0, idx: number;
                 const values = Array.from(route.paramMap.values());
-                for(let piece of route.templateUrl.split(/{/)) {
+                for(let piece of templateUrl.split(/{/)) {
                     idx = piece.indexOf("}");
                     if (idx != -1) {
                         result.push(values[i++] + piece.substring(idx + 1, piece.length));
@@ -211,6 +212,12 @@ export default class Router {
                     this.onErrorHandler(args);
                 }
                 route.element.innerHTML = await response.text();
+            }
+            for(let plugin of this.renderPlugins) {
+                let result = plugin(route);
+                if (result instanceof Promise) {
+                    await result;
+                }
             }
             this.current.element.style["display"] = "contents";
             eventResult = this.onNavigateHandler(args);

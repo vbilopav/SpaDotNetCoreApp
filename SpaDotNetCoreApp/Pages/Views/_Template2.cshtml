@@ -1,0 +1,59 @@
+﻿@model (string param1, int param2)
+
+<h5>This is a server-side rendered view, returned by gRPC endpoint <code>"grpc-template2/{param1}/{param2}"</code></h5>
+
+<br />
+<p>
+    * Server-side rendered views, returned by gRPC endpoints are available to the router by <code>data-route-grpc-template-service</code> attribute.
+</p>
+
+<p>
+    * Value of <code>data-route-grpc-template-service</code> attribute in following format: <code>/{proto package name}.{service name}/{unary rpc method name}</code>
+</p>
+<p>
+    * In this example: <code>/templates.GrpcTemplates/GetTemplate2</code>
+</p>
+
+<p>
+    * Implemented service must be unary and must return replay with key 1 (first field) that contains a content of rendered template (see GrpcTemplates.cs)
+</p>
+
+<p>
+    * To pass route parameters to your grpc service that renders your the view, use standard <code>data-route-params</code> attribute with JSON value.
+</p>
+
+<p>
+    * JSON value of <code>data-route-params</code> attribute has following format:
+    <br />
+    <code>{"key:type" : "default value"}</code>
+</p>
+
+<p>
+    <code>key</code> is grpc parameter key. For example in this request message:
+    <br />
+    <code>
+        message GetTemplate2Request {
+        string param1 = 1;
+        int32 param2 = 2;
+        }
+    </code>
+    <br />
+    It would be <code>1</code> for <code>param1</code> and <code>2</code> for <code>param2</code>
+</p>
+
+<p>
+    <code>type</code> is grpc parameter type. For string types this is optional, it will be assumed that is type "String".
+</p>
+
+<p>
+    gRPC services that are returning templates must have replay with key `1` that contains string with rendered template.
+</p>
+
+<hr />
+<p>
+    Current parameters:
+    <br />
+    param1: <code>@Model.param1</code>
+    <br />
+    param2: <code>@Model.param2</code>
+</p>

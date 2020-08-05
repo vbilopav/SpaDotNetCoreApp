@@ -6,7 +6,9 @@ This is a project template and experiment for a *lightweight* **ASP.NET Core Sin
 
 - Views that are defined by **inside Razor page** (see `Pages/Index.cshtml` for examples) by custom elements with `data-route` attribute, that can be either:
 
-1) Simple view:
+## Views
+
+### 1) Simple view:
 
 ```html
 <div class="text-center" data-route="/">
@@ -29,7 +31,7 @@ Will be considered as view with route `/privacy` and so on.
 
 Additional DOM manipulation can be achieved by using route events that occur on navigation like `onNavigate` (see `src/main.ts` for example).
 
-2) Parametrized views:
+### 2) Parametrized views:
 
 ```html
 <div data-route="/parametrized" 
@@ -46,7 +48,7 @@ If parameter is not present, default value is used. If there is more parameters 
 
 Parameters can be processed on router events `onNavigate` or `onBeforeNavigate` as event parameter values. See `src/main.ts` for this example.
 
-3) Servers side views, rendered by Razor engine and retrieved by REST endpoint
+### 3) Servers side views, rendered by Razor engine and retrieved by REST endpoint
 
 ```html
 <div data-route="/rest-template" 
@@ -72,7 +74,7 @@ REST endpoint for this view:
     }
 ```
 
-4) Servers side views, rendered by Razor engine and retrieved by **gRPC service** (7 to 10 times faster than traditional REST services)
+### 4) Servers side views, rendered by Razor engine and retrieved by **gRPC service** (7 to 10 times faster than traditional REST services)
 
 gRPC views have `data-route-grpc-template-service` attribute that contains url on the server that will return the view as plain text:
 

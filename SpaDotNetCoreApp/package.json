@@ -30,7 +30,7 @@
     "scripts": {
         "tsc-watch": "watchify -p tsify ./src/main.ts -o ./wwwroot/app.js --debug",
         "tsc-build": "browserify -p tsify ./src/main.ts > ./wwwroot/app.js --debug",
-        "transpile": "babel -o ./wwwroot/app.min.js ./wwwroot/app.js",
+        "transpile": "babel -o ./wwwroot/app.min.js ./wwwroot/app.js --no-comments",
         "scss": "node-sass ./src/site.scss > ./wwwroot/css/site.min.css --output-style compressed",
         "build-js": "npm run tsc-build && npm run transpile",
         "build-all": "npm run build-js && npm run scss"

@@ -18,7 +18,7 @@ type RouterCtorArgs = {
     element?: Element;
     hashChar?: string;
     test?: (route: string) => boolean;
-    renderPlugins?: Array<(route: IRoute) => void | Promise<void>>;
+    renderPlugins?: Array<(route: IRoute, errorHandler: ()=>void) => void | Promise<void>>;
 }
 
 type ErrorEvent = (event: RouteEventArgs) => void;
@@ -26,7 +26,7 @@ type RouteEvent = (event: RouteEventArgs) => void | boolean | Promise<void> | Pr
 
 export class Router {
     private hashChar: string;
-    private renderPlugins: Array<(route: IRoute) => void | Promise<void>>;
+    private renderPlugins: Array<(route: IRoute, errorHandler: ()=>void) => void | Promise<void>>;
     private onErrorHandler: ErrorEvent = event => {throw new Error(`Unknown route: ${event.hashChangedEvent.newURL}`)};
     private onBeforeNavigateHandler: RouteEvent = route => {};
     private onBeforeLeaveHandler: RouteEvent = route => {};
@@ -193,28 +193,8 @@ export class Router {
                     return;
                 }
             }
-
-            let templateUrl = route.element.dataset["routeTemplateUrl"] as string;
-            if (templateUrl) {
-                let result = [];
-                let i = 0, idx: number;
-                const values = Array.from(route.paramMap.values());
-                for(let piece of templateUrl.split(/{/)) {
-                    idx = piece.indexOf("}");
-                    if (idx != -1) {
-                        result.push(values[i++] + piece.substring(idx + 1, piece.length));
-                    } else {
-                        result.push(piece);
-                    }
-                }
-                const response = await fetch(result.join(""), { method: "get" });
-                if (!response.ok) {
-                    this.onErrorHandler(args);
-                }
-                route.element.innerHTML = await response.text();
-            }
             for(let plugin of this.renderPlugins) {
-                let result = plugin(route);
+                let result = plugin(route, () => this.onErrorHandler(args));
                 if (result instanceof Promise) {
                     await result;
                 }

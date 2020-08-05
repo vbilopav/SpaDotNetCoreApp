@@ -9,7 +9,7 @@ interface IParams {
     value: any;
 }
 
-export default async (route: IRoute) => {
+export default async (route: IRoute, errorHandler: ()=>void) => {
     let service = route.element.dataset["routeGrpcTemplateService"] as string;
     if (!service) {
         return;
@@ -28,5 +28,9 @@ export default async (route: IRoute) => {
         request: params.map(p => GrpcType[p.type])
     }, ...params.map(p => p.value));
 
-    route.element.innerHTML = response[1];
+    if (response instanceof Error) {
+        errorHandler();
+    } else {
+        route.element.innerHTML = response[1];
+    }
 }

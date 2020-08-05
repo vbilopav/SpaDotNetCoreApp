@@ -6,6 +6,8 @@
         "@babel/preset-env": "^7.11.0",
         "babel-preset-minify": "^0.5.1",
         "browserify": "^16.5.2",
+        "google-protobuf": "^3.12.4",
+        "grpc-web": "^1.2.0",
         "node-sass": "^4.14.1",
         "tsify": "^5.0.0",
         "typescript": "^3.9.7",

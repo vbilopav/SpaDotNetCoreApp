@@ -8,7 +8,6 @@ class Router {
         this.onBeforeLeaveHandler = route => { };
         this.onNavigateHandler = route => { };
         this.onLeaveHandler = route => { };
-        console.log("hello world from watchify router");
         args = Object.assign({
             element: document.body,
             hashChar: "#",
@@ -202,4 +201,3 @@ class Router {
     }
 }
 exports.default = Router;
-//# sourceMappingURL=router.js.map

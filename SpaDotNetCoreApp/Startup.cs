@@ -30,6 +30,7 @@ namespace SpaDotNetCoreApp
         {
             services.AddRazorPages();
             services.AddControllers();
+            services.AddGrpc();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -60,10 +61,12 @@ namespace SpaDotNetCoreApp
             app.UseStaticFiles();
 
             app.UseRouting();
+            app.UseGrpcWeb();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapRazorPages();
                 endpoints.MapControllers();
+                endpoints.MapGrpcService<GrpcTemplates>().EnableGrpcWeb();
             });
         }
     }

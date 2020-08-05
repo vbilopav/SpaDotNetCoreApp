@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+option csharp_namespace = "SpaDotNetCoreApp.Protos";
+
+package templates;
+
+service GrpcTemplates {
+	rpc GetTemplate2 (GetTemplate2Request) returns (GetTemplate2Reply);
+	rpc StreamTest (StreamTestRequest) returns (stream GetTemplate2Reply);
+}
+
+message GetTemplate2Request {
+	string name = 1;
+	int32 i = 2;
+}
+
+message GetTemplate2Reply {
+	string content = 1;
+	string content2 = 2;
+	int32 content3 = 3;
+}
+
+
+message StreamTestRequest {
+	string name = 1;
+	int32 i = 2;
+}
+
+message StreamTestReply {
+	string content = 1;
+	string content2 = 2;
+	int32 content3 = 3;
+}

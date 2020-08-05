@@ -2,7 +2,7 @@
 
 This is a project template and experiment for a *lightweight* **ASP.NET Core Single-Page Web Applications** - that have:
 
-- Simple hashtag client router written in TypeScript - manages URL changes in URL's after hash ('#') symbol - and displays appropriate views any router (see `router.ts` for more details)
+- Simple hashtag client router written in TypeScript - manages URL changes in URL's after hash ('#') symbol - and displays appropriate views as any router does (see `router.ts` for more details)
 
 - Views that are defined by **inside Razor page** (see `Pages/Index.cshtml` for examples) by custom elements with `data-route` attribute, that can be either:
 

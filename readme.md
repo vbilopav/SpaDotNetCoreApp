@@ -2,7 +2,7 @@
 
 This is a project template and experiment for a *lightweight* **ASP.NET Core Single-Page Web Applications** - that have:
 
-- Simple hashtag client router written in TypeScript - manages URL changes in URL's after hash ('#') symbol - and displays appropriate views any router (see `router.ts` for more details)
+- Simple hashtag client router written in TypeScript - manages URL changes in URL's after hash ('#') symbol - and displays appropriate views as any router does (see `router.ts` for more details)
 
 - Views that are defined by **inside Razor page** (see `Pages/Index.cshtml` for examples) by custom elements with `data-route` attribute, that can be either:
 
@@ -188,10 +188,10 @@ promise.then(response => console.log(response));
     - `suppressCorsPreflight`: default is false
 
 - `unaryCall` receives argument parameter, followed by list of request parameter values. Argument is object type that can have following properties:
-    - service: service name in format `/{proto package name}.{service name}/{unary rpc method name}`, required
-    - metadata: optional metadata sent to service, default is empty object
-    - request: array of `GrpcType` values that will set request parameter types. Parameters are matched by position in array, index 0 matches parameter with key 1, and so on. If values are not present "string" type is assumed.
-    - reply: array of `GrpcType` values that will set reply parameter types. Parameters are matched by position in array, index 0 matches parameter with key 1, and so on. If values are not present "string" type is assumed.
+    - `service`: service name in format `/{proto package name}.{service name}/{unary rpc method name}`, required
+    - `metadata`: optional metadata sent to service, default is empty object
+    - `request`: array of `GrpcType` values that will set request parameter types. Parameters are matched by position in array, index 0 matches parameter with key 1, and so on. If values are not present "string" type is assumed.
+    - `reply`: array of `GrpcType` values that will set reply parameter types. Parameters are matched by position in array, index 0 matches parameter with key 1, and so on. If values are not present "string" type is assumed.
 
 Server streaming is also supported with `serverStreaming` method.  Example:
 
@@ -224,9 +224,6 @@ Frontend system does not uses `webpack`, instead it uses combination of:
 - node-sass to build css
 
 There are also dependencies for  `grpc-web` and `google-protobuf` for gRPC support.
-
-
-Client-side local libraries (bootstrap css and SystemJS for local fallbacks) are restored and maintained by Visual Studio Library Manager (see `libman.json` file).
 
 Following NPM script are defined:
 

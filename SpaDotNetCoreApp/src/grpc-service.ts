@@ -125,7 +125,7 @@ export class GrpcService {
         this.host = args.host;
     }
 
-    public unaryCall(args: RpcCallArgs, ...params: any[]) : Promise<Record<number, any>> | Promise<Error> {
+    public unaryCall(args: RpcCallArgs, ...params: any[]) : Promise<Record<number, any>> {
         args = this.parseRpcCallArgs(args);
         return new Promise<Record<number, any>>((resolve, reject) => {
             this.client.rpcCall(

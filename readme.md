@@ -219,7 +219,7 @@ Declare reply as:
 
 ```
 message MyMessage {
-    string Message1 = 1;
+	string Message1 = 1;
 	string Message2 = 2;
 }
 

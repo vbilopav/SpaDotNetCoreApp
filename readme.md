@@ -142,6 +142,8 @@ Current gRPC web client implementations require that you download two separate e
 
 This projects features `grpc-service.ts` module that can be used to cal `grpc-web` services directly, without using any additional tools.
 
+### Simple unary call
+
 For example if you have following gRPC service:
 
 
@@ -193,6 +195,8 @@ promise.then(response => console.log(response));
     - `request`: array of `GrpcType` values that will set request parameter types. Parameters are matched by position in array, index 0 matches parameter with key 1, and so on. If values are not present "string" type is assumed.
     - `reply`: array of `GrpcType` values that will set reply parameter types. Parameters are matched by position in array, index 0 matches parameter with key 1, and so on. If values are not present "string" type is assumed.
 
+### Server streaming
+
 Server streaming is also supported with `serverStreaming` method.  Example:
 
 ```typescript
@@ -209,11 +213,7 @@ Server streaming is also supported with `serverStreaming` method.  Example:
         .on("end", () => console.log("end"));
 ```
 
-This component depends on `grpc-web` and `google-protobuf` NPM modules.
-
-### New features
-
-#### Support for `repeated` array messages in replay types
+### Support for `repeated` array messages in replay types
 
 Declare reply as:
 
@@ -250,7 +250,7 @@ This will result in complex object:
 }
 ```
 
-#### Support for field names
+### Support for field names
 
 In previous example reply structure is described as array of matching GRPC types. Result is object with GRPC keys as names.
 
@@ -282,9 +282,9 @@ This will result in complex object:
 
 which can be casted into type or interface appropriately.
 
-#### Error handling
+### Error handling
 
-Module exports appropriate error object:
+Module exports appropriate error object rejected by promise:
 
 ```TypeScript
 export type GrpcError = {
@@ -293,6 +293,21 @@ export type GrpcError = {
     metadata: Record<string, string>;
 };
 ```
+
+### Dependencies and building
+
+This component depends on `grpc-web` and `google-protobuf` NPM modules.
+
+To be able to use `grpc-service` module correctly you need to import `node_modules/google-protobuf/google-protobuf.js` and `node_modules/grpc-web/index.js`.
+
+Those two imports are using CommonJS module definitions which is appropriate for Node system. However, module bundling with `browserify` (which what this demo uses) works correctly.
+
+If you are using different module definition you'll need to slightly modify those imports first before using them. For example for AMD module definition system you can do following:
+
+For each of these modules add following line at the begging of the file `define(function (require, exports, module) {module.exports = exports; ` and following line at the end of the file ` });`. 
+
+This will make those imports AMD compliant.
+
 
 ## Build system
 

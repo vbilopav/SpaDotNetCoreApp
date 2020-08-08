@@ -29,69 +29,68 @@ var GrpcType;
     GrpcType[GrpcType["Enum"] = 22] = "Enum";
     GrpcType[GrpcType["String"] = 23] = "String";
     GrpcType[GrpcType["MessageSet"] = 24] = "MessageSet";
-    GrpcType[GrpcType["Message"] = 25] = "Message";
-    GrpcType[GrpcType["Group"] = 26] = "Group";
-    GrpcType[GrpcType["Bytes"] = 27] = "Bytes";
-    GrpcType[GrpcType["FixedHash64"] = 28] = "FixedHash64";
-    GrpcType[GrpcType["VarintHash64"] = 29] = "VarintHash64";
-    GrpcType[GrpcType["SplitFixed64"] = 30] = "SplitFixed64";
-    GrpcType[GrpcType["SplitVarint64"] = 31] = "SplitVarint64";
-    GrpcType[GrpcType["SplitZigzagVarint64"] = 32] = "SplitZigzagVarint64";
-    GrpcType[GrpcType["RepeatedInt32"] = 33] = "RepeatedInt32";
-    GrpcType[GrpcType["RepeatedInt32String"] = 34] = "RepeatedInt32String";
-    GrpcType[GrpcType["RepeatedInt64"] = 35] = "RepeatedInt64";
-    GrpcType[GrpcType["RepeatedSplitVarint64"] = 36] = "RepeatedSplitVarint64";
-    GrpcType[GrpcType["RepeatedSplitZigzagVarint64"] = 37] = "RepeatedSplitZigzagVarint64";
-    GrpcType[GrpcType["RepeatedInt64String"] = 38] = "RepeatedInt64String";
-    GrpcType[GrpcType["RepeatedUint32"] = 39] = "RepeatedUint32";
-    GrpcType[GrpcType["RepeatedUint32String"] = 40] = "RepeatedUint32String";
-    GrpcType[GrpcType["RepeatedUint64"] = 41] = "RepeatedUint64";
-    GrpcType[GrpcType["RepeatedUint64String"] = 42] = "RepeatedUint64String";
-    GrpcType[GrpcType["RepeatedSint32"] = 43] = "RepeatedSint32";
-    GrpcType[GrpcType["RepeatedSint64"] = 44] = "RepeatedSint64";
-    GrpcType[GrpcType["RepeatedSint64String"] = 45] = "RepeatedSint64String";
-    GrpcType[GrpcType["RepeatedSintHash64"] = 46] = "RepeatedSintHash64";
-    GrpcType[GrpcType["RepeatedFixed32"] = 47] = "RepeatedFixed32";
-    GrpcType[GrpcType["RepeatedFixed64"] = 48] = "RepeatedFixed64";
-    GrpcType[GrpcType["RepeatedFixed64String"] = 49] = "RepeatedFixed64String";
-    GrpcType[GrpcType["RepeatedSfixed32"] = 50] = "RepeatedSfixed32";
-    GrpcType[GrpcType["RepeatedSfixed64"] = 51] = "RepeatedSfixed64";
-    GrpcType[GrpcType["RepeatedSfixed64String"] = 52] = "RepeatedSfixed64String";
-    GrpcType[GrpcType["RepeatedFloat"] = 53] = "RepeatedFloat";
-    GrpcType[GrpcType["RepeatedDouble"] = 54] = "RepeatedDouble";
-    GrpcType[GrpcType["RepeatedBool"] = 55] = "RepeatedBool";
-    GrpcType[GrpcType["RepeatedEnum"] = 56] = "RepeatedEnum";
-    GrpcType[GrpcType["RepeatedString"] = 57] = "RepeatedString";
-    GrpcType[GrpcType["RepeatedBytes"] = 58] = "RepeatedBytes";
-    GrpcType[GrpcType["RepeatedFixedHash64"] = 59] = "RepeatedFixedHash64";
-    GrpcType[GrpcType["RepeatedVarintHash64"] = 60] = "RepeatedVarintHash64";
-    GrpcType[GrpcType["PackedInt32"] = 61] = "PackedInt32";
-    GrpcType[GrpcType["PackedInt32String"] = 62] = "PackedInt32String";
-    GrpcType[GrpcType["PackedInt64"] = 63] = "PackedInt64";
-    GrpcType[GrpcType["PackedSplitFixed64"] = 64] = "PackedSplitFixed64";
-    GrpcType[GrpcType["PackedSplitVarint64"] = 65] = "PackedSplitVarint64";
-    GrpcType[GrpcType["PackedSplitZigzagVarint64"] = 66] = "PackedSplitZigzagVarint64";
-    GrpcType[GrpcType["PackedInt64String"] = 67] = "PackedInt64String";
-    GrpcType[GrpcType["PackedUint32"] = 68] = "PackedUint32";
-    GrpcType[GrpcType["PackedUint32String"] = 69] = "PackedUint32String";
-    GrpcType[GrpcType["PackedUint64"] = 70] = "PackedUint64";
-    GrpcType[GrpcType["PackedUint64String"] = 71] = "PackedUint64String";
-    GrpcType[GrpcType["PackedSint32"] = 72] = "PackedSint32";
-    GrpcType[GrpcType["PackedSint64"] = 73] = "PackedSint64";
-    GrpcType[GrpcType["PackedSint64String"] = 74] = "PackedSint64String";
-    GrpcType[GrpcType["PackedSintHash64"] = 75] = "PackedSintHash64";
-    GrpcType[GrpcType["PackedFixed32"] = 76] = "PackedFixed32";
-    GrpcType[GrpcType["PackedFixed64"] = 77] = "PackedFixed64";
-    GrpcType[GrpcType["PackedFixed64String"] = 78] = "PackedFixed64String";
-    GrpcType[GrpcType["PackedSfixed32"] = 79] = "PackedSfixed32";
-    GrpcType[GrpcType["PackedSfixed64"] = 80] = "PackedSfixed64";
-    GrpcType[GrpcType["PackedSfixed64String"] = 81] = "PackedSfixed64String";
-    GrpcType[GrpcType["PackedFloat"] = 82] = "PackedFloat";
-    GrpcType[GrpcType["PackedDouble"] = 83] = "PackedDouble";
-    GrpcType[GrpcType["PackedBool"] = 84] = "PackedBool";
-    GrpcType[GrpcType["PackedEnum"] = 85] = "PackedEnum";
-    GrpcType[GrpcType["PackedFixedHash64"] = 86] = "PackedFixedHash64";
-    GrpcType[GrpcType["PackedVarintHash64"] = 87] = "PackedVarintHash64";
+    GrpcType[GrpcType["Group"] = 25] = "Group";
+    GrpcType[GrpcType["Bytes"] = 26] = "Bytes";
+    GrpcType[GrpcType["FixedHash64"] = 27] = "FixedHash64";
+    GrpcType[GrpcType["VarintHash64"] = 28] = "VarintHash64";
+    GrpcType[GrpcType["SplitFixed64"] = 29] = "SplitFixed64";
+    GrpcType[GrpcType["SplitVarint64"] = 30] = "SplitVarint64";
+    GrpcType[GrpcType["SplitZigzagVarint64"] = 31] = "SplitZigzagVarint64";
+    GrpcType[GrpcType["RepeatedInt32"] = 32] = "RepeatedInt32";
+    GrpcType[GrpcType["RepeatedInt32String"] = 33] = "RepeatedInt32String";
+    GrpcType[GrpcType["RepeatedInt64"] = 34] = "RepeatedInt64";
+    GrpcType[GrpcType["RepeatedSplitVarint64"] = 35] = "RepeatedSplitVarint64";
+    GrpcType[GrpcType["RepeatedSplitZigzagVarint64"] = 36] = "RepeatedSplitZigzagVarint64";
+    GrpcType[GrpcType["RepeatedInt64String"] = 37] = "RepeatedInt64String";
+    GrpcType[GrpcType["RepeatedUint32"] = 38] = "RepeatedUint32";
+    GrpcType[GrpcType["RepeatedUint32String"] = 39] = "RepeatedUint32String";
+    GrpcType[GrpcType["RepeatedUint64"] = 40] = "RepeatedUint64";
+    GrpcType[GrpcType["RepeatedUint64String"] = 41] = "RepeatedUint64String";
+    GrpcType[GrpcType["RepeatedSint32"] = 42] = "RepeatedSint32";
+    GrpcType[GrpcType["RepeatedSint64"] = 43] = "RepeatedSint64";
+    GrpcType[GrpcType["RepeatedSint64String"] = 44] = "RepeatedSint64String";
+    GrpcType[GrpcType["RepeatedSintHash64"] = 45] = "RepeatedSintHash64";
+    GrpcType[GrpcType["RepeatedFixed32"] = 46] = "RepeatedFixed32";
+    GrpcType[GrpcType["RepeatedFixed64"] = 47] = "RepeatedFixed64";
+    GrpcType[GrpcType["RepeatedFixed64String"] = 48] = "RepeatedFixed64String";
+    GrpcType[GrpcType["RepeatedSfixed32"] = 49] = "RepeatedSfixed32";
+    GrpcType[GrpcType["RepeatedSfixed64"] = 50] = "RepeatedSfixed64";
+    GrpcType[GrpcType["RepeatedSfixed64String"] = 51] = "RepeatedSfixed64String";
+    GrpcType[GrpcType["RepeatedFloat"] = 52] = "RepeatedFloat";
+    GrpcType[GrpcType["RepeatedDouble"] = 53] = "RepeatedDouble";
+    GrpcType[GrpcType["RepeatedBool"] = 54] = "RepeatedBool";
+    GrpcType[GrpcType["RepeatedEnum"] = 55] = "RepeatedEnum";
+    GrpcType[GrpcType["RepeatedString"] = 56] = "RepeatedString";
+    GrpcType[GrpcType["RepeatedBytes"] = 57] = "RepeatedBytes";
+    GrpcType[GrpcType["RepeatedFixedHash64"] = 58] = "RepeatedFixedHash64";
+    GrpcType[GrpcType["RepeatedVarintHash64"] = 59] = "RepeatedVarintHash64";
+    GrpcType[GrpcType["PackedInt32"] = 60] = "PackedInt32";
+    GrpcType[GrpcType["PackedInt32String"] = 61] = "PackedInt32String";
+    GrpcType[GrpcType["PackedInt64"] = 62] = "PackedInt64";
+    GrpcType[GrpcType["PackedSplitFixed64"] = 63] = "PackedSplitFixed64";
+    GrpcType[GrpcType["PackedSplitVarint64"] = 64] = "PackedSplitVarint64";
+    GrpcType[GrpcType["PackedSplitZigzagVarint64"] = 65] = "PackedSplitZigzagVarint64";
+    GrpcType[GrpcType["PackedInt64String"] = 66] = "PackedInt64String";
+    GrpcType[GrpcType["PackedUint32"] = 67] = "PackedUint32";
+    GrpcType[GrpcType["PackedUint32String"] = 68] = "PackedUint32String";
+    GrpcType[GrpcType["PackedUint64"] = 69] = "PackedUint64";
+    GrpcType[GrpcType["PackedUint64String"] = 70] = "PackedUint64String";
+    GrpcType[GrpcType["PackedSint32"] = 71] = "PackedSint32";
+    GrpcType[GrpcType["PackedSint64"] = 72] = "PackedSint64";
+    GrpcType[GrpcType["PackedSint64String"] = 73] = "PackedSint64String";
+    GrpcType[GrpcType["PackedSintHash64"] = 74] = "PackedSintHash64";
+    GrpcType[GrpcType["PackedFixed32"] = 75] = "PackedFixed32";
+    GrpcType[GrpcType["PackedFixed64"] = 76] = "PackedFixed64";
+    GrpcType[GrpcType["PackedFixed64String"] = 77] = "PackedFixed64String";
+    GrpcType[GrpcType["PackedSfixed32"] = 78] = "PackedSfixed32";
+    GrpcType[GrpcType["PackedSfixed64"] = 79] = "PackedSfixed64";
+    GrpcType[GrpcType["PackedSfixed64String"] = 80] = "PackedSfixed64String";
+    GrpcType[GrpcType["PackedFloat"] = 81] = "PackedFloat";
+    GrpcType[GrpcType["PackedDouble"] = 82] = "PackedDouble";
+    GrpcType[GrpcType["PackedBool"] = 83] = "PackedBool";
+    GrpcType[GrpcType["PackedEnum"] = 84] = "PackedEnum";
+    GrpcType[GrpcType["PackedFixedHash64"] = 85] = "PackedFixedHash64";
+    GrpcType[GrpcType["PackedVarintHash64"] = 86] = "PackedVarintHash64";
 })(GrpcType = exports.GrpcType || (exports.GrpcType = {}));
 const indexOrDefault = (array, index, _default) => {
     if (!array || index >= array.length) {
@@ -124,7 +123,8 @@ class GrpcService {
         args = Object.assign({
             metadata: {},
             request: new Array(),
-            reply: new Array()
+            reply: new Array(),
+            resultNames: new Array()
         }, args);
         if (!args.service) {
             throw args.service;
@@ -136,7 +136,7 @@ class GrpcService {
             jspb.Message.initialize(this, opt, 0, -1, null, null);
         }, function (opt) {
             jspb.Message.initialize(this, opt, 0, -1, null, null);
-        }, request => this.serializeBinary(request, args.request), bytes => this.deserializeBinary(bytes, args.reply));
+        }, request => this.serializeBinary(request, args.request), bytes => this.deserializeBinary(bytes, args));
     }
     serializeBinary(request, requestTypes) {
         const writer = new jspb.BinaryWriter();
@@ -150,7 +150,7 @@ class GrpcService {
         }
     }
     ;
-    deserializeBinary(bytes, replyTypes) {
+    deserializeBinary(bytes, args) {
         const result = {};
         const reader = new jspb.BinaryReader(bytes);
         while (reader.nextField()) {
@@ -158,10 +158,58 @@ class GrpcService {
                 break;
             }
             let field = reader.getFieldNumber();
-            let type = GrpcType[indexOrDefault(replyTypes, field - 1, GrpcType.String)];
-            result[field] = reader["read" + type]();
+            let name;
+            let replyValue = indexOrDefault(args.reply, field - 1, GrpcType.String);
+            let replyType;
+            if (replyValue instanceof Object && !(replyValue instanceof Array)) {
+                let entries = Object.entries(replyValue);
+                name = entries[0][0];
+                replyType = entries[0][1];
+            }
+            else {
+                name = field;
+                replyType = replyValue;
+            }
+            if (!(replyType instanceof Array)) {
+                let type = GrpcType[replyType];
+                result[name] = reader["read" + type]();
+            }
+            else {
+                const message = {};
+                reader.readMessage(message, (msg, reader) => this.deserializeMessage(msg, reader, replyType));
+                let value = result[name];
+                if (value) {
+                    value.push(message);
+                }
+                else {
+                    result[name] = [message];
+                }
+            }
         }
         return result;
+    }
+    deserializeMessage(message, reader, replyTypes) {
+        while (reader.nextField()) {
+            if (reader.isEndGroup()) {
+                break;
+            }
+            let field = reader.getFieldNumber();
+            let name;
+            let replyValue = indexOrDefault(replyTypes, field - 1, GrpcType.String);
+            let replyType;
+            if (replyValue instanceof Object) {
+                let entries = Object.entries(replyValue);
+                name = entries[0][0];
+                replyType = entries[0][1];
+            }
+            else {
+                name = field;
+                replyType = replyValue;
+            }
+            let type = GrpcType[replyType];
+            message[name] = reader["read" + type]();
+        }
+        return message;
     }
 }
 exports.GrpcService = GrpcService;

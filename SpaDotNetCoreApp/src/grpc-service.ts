@@ -27,7 +27,6 @@ export enum GrpcType {
     Enum,
     String,
     MessageSet,
-    Message,
     Group,
     Bytes,
     FixedHash64,
@@ -92,14 +91,22 @@ export enum GrpcType {
     PackedVarintHash64
 }
 
-/** 
- * @service "/{proto name}.{ServiceName}/{rpc method name}"
-*/
+export type GrpcError = {
+    code: number;
+    message: string;
+    metadata: Record<string, string>;
+};
+
+type RequestType = Array<GrpcType>;
+type ReplyType = Array<GrpcType | Array<GrpcType>> | Array<Record<string, GrpcType | Array< Record<string, GrpcType>>>>
+
+type ResultType = Record<number | string, any> | GrpcError;
+
 type RpcCallArgs = {
     service?: string;
     metadata?: Record<any, any>;
-    request?: Array<GrpcType>;
-    reply?: Array<GrpcType>;
+    request?: RequestType;
+    reply?: ReplyType;
 }
 
 type GrpcServiceCtorArgs = {
@@ -108,7 +115,7 @@ type GrpcServiceCtorArgs = {
     suppressCorsPreflight?: boolean;
 }
 
-const indexOrDefault: (array: Array<GrpcType>, index: number, _default: GrpcType) => GrpcType = (array, index, _default) => {
+const indexOrDefault: <T>(array: Array<any>, index: number, _default: T) => T = (array, index, _default) => {
     if (!array || index >= array.length) {
         return _default;
     }
@@ -125,15 +132,15 @@ export class GrpcService {
         this.host = args.host;
     }
 
-    public unaryCall(args: RpcCallArgs, ...params: any[]) : Promise<Record<number, any>> {
+    public unaryCall(args: RpcCallArgs, ...params: any[]) : Promise<ResultType> {
         args = this.parseRpcCallArgs(args);
-        return new Promise<Record<number, any>>((resolve, reject) => {
+        return new Promise<ResultType>((resolve, reject) => {
             this.client.rpcCall(
                 `${this.host}${args.service}`,
                 {array: params},
                 args.metadata,
                 this.createMethodDescriptor(args, false),
-                (error, response: Record<number, any>) => {
+                (error, response: ResultType) => {
                     if (error) {
                         return reject(error);
                     }
@@ -143,7 +150,7 @@ export class GrpcService {
         });
     }
 
-    public serverStreaming(args: RpcCallArgs, ...params: any[]) : grpcWeb.ClientReadableStream<Record<number, any>> {
+    public serverStreaming(args: RpcCallArgs, ...params: any[]) : grpcWeb.ClientReadableStream<ResultType> {
         args = this.parseRpcCallArgs(args);
         return this.client.serverStreaming(`${this.host}${args.service}`, {array: params}, args.metadata, this.createMethodDescriptor(args, true));
     }
@@ -152,7 +159,8 @@ export class GrpcService {
         args = Object.assign({
             metadata: {},
             request: new Array<GrpcType>(),
-            reply: new Array<GrpcType>()
+            reply: new Array<GrpcType | Array<GrpcType>>(),
+            resultNames: new Array<string | Array<string>>()
         }, args);
         if (!args.service) {
             throw args.service;
@@ -171,34 +179,80 @@ export class GrpcService {
                 jspb.Message.initialize(this, opt, 0, -1, null, null);
             },
             request => this.serializeBinary(request, args.request),
-            bytes => this.deserializeBinary(bytes, args.reply)
+            bytes => this.deserializeBinary(bytes, args)
         )
     }
 
-    private serializeBinary(request, requestTypes: Array<GrpcType>) {
+    private serializeBinary(request, requestTypes: RequestType) {
         const writer = new jspb.BinaryWriter();
         this.serializeBinaryToWriter(request, writer, requestTypes);
         return writer.getResultBuffer();
     }
 
-    private serializeBinaryToWriter(message, writer, requestTypes: Array<GrpcType>) {
+    private serializeBinaryToWriter(message, writer, requestTypes: RequestType) {
         for(let i = 0, l = message.array.length; i < l; i++) {
             let type = GrpcType[indexOrDefault(requestTypes, i, GrpcType.String) as GrpcType];
             writer["write" + type](i + 1, message.array[i]);
         }
     };
 
-    private deserializeBinary(bytes, replyTypes: Array<GrpcType>): Record<number, any> {
-        const result: Record<number, any> = {};
+    private deserializeBinary(bytes, args: RpcCallArgs): ResultType {
+        const result: ResultType = {};
         const reader = new jspb.BinaryReader(bytes);
         while (reader.nextField()) {
             if (reader.isEndGroup()) {
                 break;
             }
-            let field = reader.getFieldNumber();
-            let type = GrpcType[indexOrDefault(replyTypes, field - 1, GrpcType.String) as GrpcType];
-            result[field] = reader["read" + type]();
+            let field = reader.getFieldNumber() as number;
+            let name;
+            let replyValue = indexOrDefault(args.reply, field - 1, GrpcType.String) as any;
+            let replyType;
+            if (replyValue instanceof Object && !(replyValue instanceof Array)) {
+                let entries = Object.entries(replyValue);
+                name = entries[0][0];
+                replyType = entries[0][1];
+            } else {
+                name = field;
+                replyType = replyValue;
+            }
+            if (!(replyType instanceof Array)) {
+                let type = GrpcType[replyType];
+                result[name] = reader["read" + type]();
+            } else {
+                const message: ResultType = {};
+                reader.readMessage(message, (msg, reader) => this.deserializeMessage(msg, reader, replyType));
+                let value = result[name];
+                if (value) {
+                    value.push(message);
+                } else {
+                    result[name] = [message];
+                }
+            }
         }
         return result;
+    }
+
+    private deserializeMessage(message: Record<number, any>, reader: any, replyTypes: any): Record<number, any> {
+        while (reader.nextField()) {
+            if (reader.isEndGroup()) {
+                break;
+            }
+            let field = reader.getFieldNumber();
+            let name;
+            let replyValue = indexOrDefault(replyTypes, field - 1, GrpcType.String) as any;
+            let replyType;
+            if (replyValue instanceof Object) {
+                let entries = Object.entries(replyValue);
+                name = entries[0][0];
+                replyType = entries[0][1];
+            } else {
+                name = field;
+                replyType = replyValue;
+            }
+
+            let type = GrpcType[replyType];
+            message[name] = reader["read" + type]();
+        }
+        return message;
     }
 }

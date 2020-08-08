@@ -211,8 +211,90 @@ Server streaming is also supported with `serverStreaming` method.  Example:
 
 This component depends on `grpc-web` and `google-protobuf` NPM modules.
 
-## Build system
+### New features
 
+#### Support for `repeated` array messages in replay types
+
+Declare reply as:
+
+```
+message MyMessage {
+    string Message1 = 1;
+	string Message2 = 2;
+}
+
+message MyReply {
+	repeated MyMessage Messages = 1;
+	string SomeOtherField = 2;
+}
+```
+
+Fetch result as :
+
+```TypeScript
+    const result = await service.unaryCall({
+        service: "/mygrpc.MyService/MyMethod",
+        request: [],
+        reply: [
+            [GrpcType.String, GrpcType.String], GrpcType.String
+        ]
+    });
+```
+
+This will result in complex object:
+
+```
+{
+    1: [{1: string, 2: string}, {1: string, 2: string} ...]
+    2: string
+}
+```
+
+#### Support for field names
+
+In previous example reply structure is described as array of matching GRPC types. Result is object with GRPC keys as names.
+
+Instead of array of matching GRPC types we can now pass object `{"name": GrpcType}`.
+
+For example:
+
+```TypeScript
+    const result = await service.unaryCall({
+        service: "/mygrpc.MyService/MyMethod",
+        request: [],
+        reply: [
+            {
+                messages: [{message1: GrpcType.String}, {message2: GrpcType.String}]
+            }, 
+            {someOtherField: GrpcType.String}
+        ]
+    });
+```
+
+This will result in complex object:
+
+```
+{
+    messages: [{message1: string, message2: string}, {message1: string, message2: string} ...]
+    someOtherField: string
+}
+```
+
+which can be casted into type or interface appropriately.
+
+#### Error handling
+
+Module exports appropriate error object:
+
+```TypeScript
+export type GrpcError = {
+    code: number;
+    message: string;
+    metadata: Record<string, string>;
+};
+```
+
+## Build system
 
 Frontend system does not uses `webpack`, instead it uses combination of:
 

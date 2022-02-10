@@ -8,7 +8,7 @@
         "browserify": "^16.5.2",
         "google-protobuf": "^3.12.4",
         "grpc-web": "^1.2.0",
-        "node-sass": "^4.14.1",
+        "node-sass": "^7.0.0",
         "tsify": "^5.0.0",
         "typescript": "^3.9.7",
         "watchify": "^3.11.1"
